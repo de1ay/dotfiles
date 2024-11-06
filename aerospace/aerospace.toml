@@ -1,5 +1,5 @@
 # Override PATH so apps are available in callbacks
-exec.env-vars.PATH = '/usr/local/bin/:${PATH}'
+exec.env-vars.PATH = '/usr/local/bin/:/opt/homebrew/bin/:${PATH}'
 
 # You can use it to add commands that run after login to macOS user session.
 # 'start-at-login' needs to be 'true' for 'after-login-command' to work
