@@ -1,4 +1,4 @@
-vim.keymap.set("n", "<leader>pe", vim.cmd.Ex)
+vim.keymap.set("n", "<leader>e", vim.cmd.Ex)
 
 -- Disable arrow keys in normal mode
 vim.keymap.set("n", "<Left>", "<nop>")
