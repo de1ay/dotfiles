@@ -11,8 +11,6 @@ return {
   },
 
   config = function()
-    vim.opt.signcolumn = "yes"
-
     local lspconfig_defaults = require("lspconfig").util.default_config
     lspconfig_defaults.capabilities = vim.tbl_deep_extend(
       "force",
@@ -86,9 +84,19 @@ return {
         { name = "nvim_lsp" },
       },
       mapping = cmp.mapping.preset.insert({
+        -- Select [p]revious item
         ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = "select" }),
+        -- Select [n]ext item
         ["<C-n>"] = cmp.mapping.select_next_item({ behavior = "select" }),
+
+        -- Scroll the documentation window [b]ack / [f]orward
+        ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-f>'] = cmp.mapping.scroll_docs(4),
+
+        -- Accept ([y]es) the completion
         ["<C-y>"] = cmp.mapping.confirm({ select = true }),
+
+        -- Manually trigger a completion from nvim-cmp
         ["<C-Space>"] = cmp.mapping.complete(),
       }),
       snippet = {

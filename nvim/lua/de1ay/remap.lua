@@ -1,3 +1,4 @@
+-- Open netrw on <leader>e
 vim.keymap.set("n", "<leader>e", vim.cmd.Ex)
 
 -- Disable arrow keys in normal mode
