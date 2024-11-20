@@ -14,5 +14,5 @@ vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
 
--- Yank to system clipboard on <leader>y in visual mode
-vim.keymap.set("v", "<leader>y", "\"+y")
+-- Make yanking to system clipboard quicker
+vim.keymap.set({"n", "v"}, "<leader>y", "\"+y")
