@@ -1,0 +1,14 @@
+# Theme
+theme = light:rose-pine-dawn,dark:rose-pine
+
+# Window
+macos-titlebar-style = hidden
+macos-window-shadow = false
+
+# Font
+font-family = JetBrainsMono Nerd Font
+font-size = 18
+
+# Quick terminal
+quick-terminal-position = top
+keybind = global:super+ctrl+t=toggle_quick_terminal
