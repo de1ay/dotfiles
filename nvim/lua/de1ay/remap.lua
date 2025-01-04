@@ -23,3 +23,13 @@ vim.keymap.set({ "n", "v" }, "<leader>d", "\"_d")
 -- Move selected lines in visual mode
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+
+-- Open/Close QuickFix list
+vim.keymap.set("n", "<leader>c", "<cmd>copen<CR>")
+vim.keymap.set("n", "<leader>C", "<cmd>cclose<CR>")
+
+-- Navigating QuickFix list
+vim.keymap.set("n", "<C-j>", "<cmd>cnext<CR>zz")
+vim.keymap.set("n", "<C-k>", "<cmd>cprev<CR>zz")
+vim.keymap.set("n", "<leader>j", "<cmd>lnext<CR>zz")
+vim.keymap.set("n", "<leader>k", "<cmd>lprev<CR>zz")
