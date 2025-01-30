@@ -28,8 +28,8 @@ vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
 -- Open/Close QuickFix list
-vim.keymap.set("n", "<leader>c", "<cmd>copen<CR>")
-vim.keymap.set("n", "<leader>C", "<cmd>cclose<CR>")
+vim.keymap.set("n", "<leader>x", "<cmd>copen<CR>")
+vim.keymap.set("n", "<leader>X", "<cmd>cclose<CR>")
 
 -- Navigating QuickFix list
 vim.keymap.set("n", "<C-j>", "<cmd>cnext<CR>zz")
