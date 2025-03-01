@@ -22,8 +22,14 @@ hydrate() {
 if [[ $# -eq 1 ]]; then
   selected=$1
 else
-  paths=(~ ~/projects ~/projects/code ~/projects/code/*)
-  selected=$(find ${paths[*]} -mindepth 1 -maxdepth 1 -type d | fzf)
+	oneDepthPaths=(~ ~/projects ~/projects/code)
+  twoDepthPaths=(~/projects/code/*)
+	
+	findWithOneDepth=$(find ${oneDepthPaths[*]} -mindepth 1 -maxdepth 1 -type d)
+	findWithTwoDepth=$(find ${twoDepthPaths[*]} -mindepth 1 -maxdepth 2 -type d)
+	findInPaths=$(echo "$findWithOneDepth"; echo "$findWithTwoDepth")
+
+  selected=$(echo "$findInPaths" | fzf)
 fi
 
 if [[ -z $selected ]]; then
