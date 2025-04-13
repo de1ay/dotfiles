@@ -17,22 +17,26 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz")
 -- Make yanking to system clipboard quicker
 vim.keymap.set({ "n", "v" }, "<leader>y", "\"+y")
 
--- Delete without rewriting registers
-vim.keymap.set({ "n", "v" }, "<leader>d", "\"_d")
-
--- Paste without rewriting registers
-vim.keymap.set({ "n", "v" }, "<leader>d", "\"_dP")
-
 -- Move selected lines in visual mode
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
 -- Open/Close QuickFix list
-vim.keymap.set("n", "<leader>x", "<cmd>copen<CR>")
-vim.keymap.set("n", "<leader>X", "<cmd>cclose<CR>")
+vim.keymap.set("n", "<leader>q", "<cmd>copen<CR>")
+vim.keymap.set("n", "<leader>Q", "<cmd>cclose<CR>")
+
+-- Clear and close QuickFix list
+vim.keymap.set("n", "<leader>qq", function()
+	vim.fn.setqflist({}, 'r')
+	vim.cmd("cclose")
+end)
 
 -- Navigating QuickFix list
 vim.keymap.set("n", "<C-j>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-k>", "<cmd>cprev<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>k", "<cmd>lprev<CR>zz")
+
+-- Diagnostic keymaps
+vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float)
+vim.keymap.set('n', '<leader>dq', vim.diagnostic.setqflist)
