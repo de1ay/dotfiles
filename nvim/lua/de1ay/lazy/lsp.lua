@@ -17,21 +17,13 @@ return {
 				end
 
 				map("n", "K", vim.lsp.buf.hover, "Brief info")
-
 				map("n", "gd", require("telescope.builtin").lsp_definitions, "Go to definition")
-
 				map("n", "gD", vim.lsp.buf.declaration, "Go to declaration")
-
 				map("n", "gi", require("telescope.builtin").lsp_implementations, "List implementations")
-
 				map("n", "gt", require("telescope.builtin").lsp_type_definitions, "Go to type definition")
-
 				map("n", "gr", require("telescope.builtin").lsp_references, "Show references")
-
 				map("n", "<leader>cr", vim.lsp.buf.rename, "Rename all references")
-
 				map({ "n", "x" }, "<leader>cf", "<cmd>lua vim.lsp.buf.format({ async = true })<cr>", "Format code")
-
 				map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
 			end,
 		})
