@@ -1,109 +1,93 @@
 return {
-  "VonHeikemen/lsp-zero.nvim",
-  branch = "v4.x",
+	"neovim/nvim-lspconfig",
 
-  dependencies = {
-    "williamboman/mason.nvim",
-    "williamboman/mason-lspconfig.nvim",
-    "neovim/nvim-lspconfig",
-    "hrsh7th/cmp-nvim-lsp",
-    "hrsh7th/nvim-cmp",
-  },
+	dependencies = {
+		{ "williamboman/mason.nvim", opts = {} },
+		"williamboman/mason-lspconfig.nvim",
+		"saghen/blink.cmp",
+	},
 
-  config = function()
-    local lspconfig_defaults = require("lspconfig").util.default_config
-    lspconfig_defaults.capabilities = vim.tbl_deep_extend(
-      "force",
-      lspconfig_defaults.capabilities,
-      require("cmp_nvim_lsp").default_capabilities()
-    )
+	config = function()
+		vim.api.nvim_create_autocmd("LspAttach", {
+			group = vim.api.nvim_create_augroup('de1ay-lsp-attach', { clear = true }),
+			callback = function(event)
+				local map = function(mode, keys, func, desc)
+					mode = mode or "n"
+					vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
+				end
 
-    vim.api.nvim_create_autocmd("LspAttach", {
-      desc = "LSP actions",
-      callback = function(event)
-        local opts = { buffer = event.buf }
+				map("n", "K", vim.lsp.buf.hover, "Brief info")
 
-        opts["desc"] = "LSP: Brief info"
-        vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
+				map("n", "gd", require("telescope.builtin").lsp_definitions, "Go to definition")
 
-        opts["desc"] = "LSP: Go to definition"
-        vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
+				map("n", "gD", vim.lsp.buf.declaration, "Go to declaration")
 
-        opts["desc"] = "LSP: Go to declaration"
-        vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
+				map("n", "gi", require("telescope.builtin").lsp_implementations, "List implementations")
 
-        opts["desc"] = "LSP: List implementations"
-        vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
+				map("n", "gt", require("telescope.builtin").lsp_type_definitions, "Go to type definition")
 
-        opts["desc"] = "LSP: Go to type definition"
-        vim.keymap.set("n", "gt", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
+				map("n", "gr", require("telescope.builtin").lsp_references, "Show references")
 
-        opts["desc"] = "LSP: Show references"
-        vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
+				map("n", "<leader>cr", vim.lsp.buf.rename, "Rename all references")
 
-        opts["desc"] = "LSP: Signature help"
-        vim.keymap.set("i", "<C-h>", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
+				map({ "n", "x" }, "<leader>cf", "<cmd>lua vim.lsp.buf.format({ async = true })<cr>", "Format code")
 
-        opts["desc"] = "LSP: Rename all references"
-        vim.keymap.set("n", "<leader>cr", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
+				map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
+			end,
+		})
 
-        opts["desc"] = "LSP: Format code"
-        vim.keymap.set({ "n", "x" }, "<leader>cf", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", opts)
+		vim.diagnostic.config {
+			severity_sort = true,
+			float = { border = 'rounded', source = 'if_many' },
+			underline = { severity = vim.diagnostic.severity.ERROR },
+			signs = vim.g.have_nerd_font and {
+				text = {
+					[vim.diagnostic.severity.ERROR] = '󰅚 ',
+					[vim.diagnostic.severity.WARN] = '󰀪 ',
+					[vim.diagnostic.severity.INFO] = '󰋽 ',
+					[vim.diagnostic.severity.HINT] = '󰌶 ',
+				},
+			} or {},
+			virtual_text = {
+				source = 'if_many',
+				spacing = 2,
+				format = function(diagnostic)
+					local diagnostic_message = {
+						[vim.diagnostic.severity.ERROR] = diagnostic.message,
+						[vim.diagnostic.severity.WARN] = diagnostic.message,
+						[vim.diagnostic.severity.INFO] = diagnostic.message,
+						[vim.diagnostic.severity.HINT] = diagnostic.message,
+					}
+					return diagnostic_message[diagnostic.severity]
+				end,
+			},
+		}
 
-        opts["desc"] = "LSP: Code action"
-        vim.keymap.set("n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
-      end,
-    })
+		local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-    require("mason").setup({})
-    require("mason-lspconfig").setup({
-      handlers = {
-        function(server_name)
-          require("lspconfig")[server_name].setup({})
-        end,
+		local servers = {
+			lua_ls = {
+				settings = {
+					Lua = {
+						completion = {
+							callSnippet = "Replace",
+						},
+					},
+				},
+			},
+		}
 
-        ["lua_ls"] = function()
-          local lspconfig = require("lspconfig")
-          lspconfig.lua_ls.setup {
-            settings = {
-              Lua = {
-                runtime = { version = "Lua 5.1" },
-                diagnostics = {
-                  globals = { "bit", "vim", "it", "describe", "before_each", "after_each" },
-                }
-              }
-            }
-          }
-        end
-      },
-    })
+		require("mason-lspconfig").setup({
+			ensure_installed = servers,
+			automatic_installation = false,
+			handlers = {
+				function(server_name)
+					local server = servers[server_name] or {}
 
-    local cmp = require("cmp")
-    cmp.setup({
-      sources = {
-        { name = "nvim_lsp" },
-      },
-      mapping = cmp.mapping.preset.insert({
-        -- Select [p]revious item
-        ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = "select" }),
-        -- Select [n]ext item
-        ["<C-n>"] = cmp.mapping.select_next_item({ behavior = "select" }),
-
-        -- Scroll the documentation window [b]ack / [f]orward
-        ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-        ['<C-f>'] = cmp.mapping.scroll_docs(4),
-
-        -- Accept ([y]es) the completion
-        ["<C-y>"] = cmp.mapping.confirm({ select = true }),
-
-        -- Manually trigger a completion from nvim-cmp
-        ["<C-Space>"] = cmp.mapping.complete(),
-      }),
-      snippet = {
-        expand = function(args)
-          vim.snippet.expand(args.body)
-        end,
-      },
-    })
-  end
+					server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+					require("lspconfig")[server_name].setup(server)
+				end,
+			},
+		})
+	end
 }
