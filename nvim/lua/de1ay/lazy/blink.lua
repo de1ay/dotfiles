@@ -16,10 +16,10 @@ return {
 			end)(),
 			dependencies = {
 				{
-				  "rafamadriz/friendly-snippets",
-				  config = function()
-				    require("luasnip.loaders.from_vscode").lazy_load()
-				  end,
+					"rafamadriz/friendly-snippets",
+					config = function()
+						require("luasnip.loaders.from_vscode").lazy_load()
+					end,
 				},
 			},
 			opts = {},
@@ -58,8 +58,8 @@ return {
 				copilot = {
 					name = "copilot",
 					module = "blink-copilot",
-          score_offset = 99,
-          async = true,
+					score_offset = 99,
+					async = true,
 				},
 			},
 		},
