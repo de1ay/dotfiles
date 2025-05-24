@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# Script that creates project directory, setups git repo, and opens a new tmux session.
+# Depends on curl, git, and tmux-sessionizer.
+#
+# Usage: tmux-project project_name optional_git_username optional_git_instance
+#
+# Example: tmux-project test de1ay gitlab.com
+# Assuming directory doesn't exist, this command will: 
+# 1. Create a new directory in $HOME/projects/code/gitlab.com/de1ay/test
+# 2. Clone a remote repo using SSH git@gitlab.com:de1ay/test
+# 3. Open a new tmux session using sessionizer
+PROJECT_NAME=$1
+GIT_USERNAME=${2:-"de1ay"}
+GIT_INSTANCE=${3:-"github.com"}
+
+PROJECT_DIR="$HOME/projects/code/$GIT_INSTANCE/$GIT_USERNAME/$PROJECT_NAME"
+GIT_WEB_URL="https://$GIT_INSTANCE/$GIT_USERNAME/$PROJECT_NAME"
+GIT_SSH_URL="git@$GIT_INSTANCE:$GIT_USERNAME/$PROJECT_NAME.git"
+
+sanity_check() {
+	if ! command -v curl &>/dev/null; then
+		echo "git is not installed. Please install it first."
+		exit 1
+	fi
+
+	if ! command -v git &>/dev/null; then
+		echo "git is not installed. Please install it first."
+		exit 1
+	fi
+
+	if ! command -v tmux-sessionizer &>/dev/null; then
+		echo "git is not installed. Please install it first."
+		exit 1
+	fi
+}
+
+does_git_origin_exist() {
+	HTTP_STATUS=$(curl --head --silent $GIT_WEB_URL | head -n 1)
+
+	if echo "$HTTP_STATUS" | grep -q "404"; then
+		echo 0
+	else
+		echo 1
+	fi
+}
+
+sanity_check
+
+# Init project directory if doesn't exist
+if [[ ! -d $PROJECT_DIR ]]; then
+	mkdir -p $PROJECT_DIR
+	if [ $(does_git_origin_exist) -eq 1 ]; then
+		# Clone remote repo if it exists
+		git clone $GIT_SSH_URL $PROJECT_DIR
+	else
+		# Init a new git repo if remote doesn't exist
+		CURRENT_DIR=$(pwd)
+		cd $PROJECT_DIR
+		git init
+		git remote add origin $GIT_SSH_URL
+		cd $CURRENT_DIR
+	fi
+fi
+
+tmux-sessionizer $PROJECT_DIR
+
