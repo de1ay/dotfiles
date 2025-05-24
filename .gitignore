@@ -3,9 +3,12 @@
 !.tmux.conf
 
 !bin/
+!tmux-sessionizer/
 
-!aerospace/
 !ghostty/
 !nvim/
+
+# MacOS
+!aerospace/
 !sketchybar/
 
