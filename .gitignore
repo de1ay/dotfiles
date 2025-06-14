@@ -8,6 +8,10 @@
 !ghostty/
 !nvim/
 
+# Linux
+!hypr/
+!walker/
+
 # MacOS
 !aerospace/
 !sketchybar/
