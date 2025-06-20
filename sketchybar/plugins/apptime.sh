@@ -7,6 +7,11 @@ else
 fi
 
 BUNDLE_IDENTIFIER=$(aerospace list-apps | grep "$APP_NAME$" | awk '{print $3}')
-APPTIME=$(curl 127.0.0.1:5501/app/$BUNDLE_IDENTIFIER)
+
+FIFO_PATH=/tmp/de1ay/apptime-sketchybar.pipe
+if [[ -p $FIFO_PATH ]]; then
+	echo $BUNDLE_IDENTIFIER > $FIFO_PATH
+	APPTIME=$(cat $FIFO_PATH)
+fi
 
 sketchybar --set "$NAME" label="$APPTIME"
