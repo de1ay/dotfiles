@@ -1,5 +1,7 @@
 # Theme
-theme = light:rose-pine-dawn,dark:rose-pine
+theme = light:Rose Pine Dawn,dark:Rose Pine
+background-blur = false
+background-opacity = 0.85
 
 # Window
 macos-titlebar-style = hidden
