@@ -4,6 +4,11 @@ return {
 	dependencies = {
 		{ "williamboman/mason.nvim", opts = {} },
 		"williamboman/mason-lspconfig.nvim",
+		
+		-- LSP status updates
+		{ 'j-hui/fidget.nvim', opts = {} },
+
+		-- Extra capabilities provided by blink.cmp
 		"saghen/blink.cmp",
 	},
 
@@ -22,7 +27,7 @@ return {
 				map("n", "gi", require("telescope.builtin").lsp_implementations, "List implementations")
 				map("n", "gt", require("telescope.builtin").lsp_type_definitions, "Go to type definition")
 				map("n", "gr", require("telescope.builtin").lsp_references, "Show references")
-				map("n", "<leader>cr", vim.lsp.buf.rename, "Rename all references")
+				map("n", "<leader>cr", vim.lsp.buf.rename, "Rename")
 				map({ "n", "x" }, "<leader>cf", "<cmd>lua vim.lsp.buf.format({ async = true })<cr>", "Format code")
 				map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
 			end,
